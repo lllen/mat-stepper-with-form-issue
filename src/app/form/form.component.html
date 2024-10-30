@@ -1,1 +1,44 @@
-<p>form works!</p>
+<mat-stepper orientation="vertical" linear #stepper>
+  <!-- Step 1 -->
+  <mat-step [stepControl]="myForm" label="User Information">
+    <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+      <div formArrayName="info">
+        <div *ngFor="let group of info.controls; let i = index" [formGroupName]="i">
+          <mat-form-field appearance="fill">
+            <mat-label>Name {{ i + 1 }}</mat-label>
+            <input matInput formControlName="name" placeholder="Enter name" />
+            <mat-error *ngIf="group.get('name')?.hasError('required')">
+              Name is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Email {{ i + 1 }}</mat-label>
+            <input matInput formControlName="email" placeholder="Enter email" />
+            <mat-error *ngIf="group.get('email')?.hasError('required')">
+              Email is required
+            </mat-error>
+            <mat-error *ngIf="group.get('email')?.hasError('email')">
+              Enter a valid email
+            </mat-error>
+          </mat-form-field>
+
+          <button mat-icon-button color="warn" type="button" (click)="removeInfoGroup(i)" *ngIf="info.length > 1">
+            Remove
+          </button>
+        </div>
+      </div>
+      <button mat-button type="button" (click)="addInfoGroup()">Add Name-Email</button>
+
+      <button mat-raised-button matStepperNext color="primary" [disabled]="myForm.invalid">
+        Continue
+      </button>
+    </form>
+  </mat-step>
+
+  <!-- Step 2 (Add more steps as needed) -->
+  <mat-step label="Additional Step">
+    <p>Additional content goes here.</p>
+    <button mat-raised-button matStepperPrevious>Back</button>
+  </mat-step>
+</mat-stepper>
